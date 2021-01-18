@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="SDL2_image-2.0.1"
+                   displayName="SDL2_image-2.0.1"
+                   projectFiles="true"
+                   root="../SDL2_image-2.0.1">
+      <itemPath>../SDL2_image-2.0.1/IMG.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_bmp.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_gif.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_jpg.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_lbm.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_pcx.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_png.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_pnm.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_tga.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_tif.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_webp.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_xcf.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_xpm.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/IMG_xv.c</itemPath>
+      <itemPath>../SDL2_image-2.0.1/SDL_image.h</itemPath>
+      <itemPath>../SDL2_image-2.0.1/miniz.h</itemPath>
+    </logicalFolder>
+    <df root="." name="0">
+      <df name="src">
+        <df name="com">
+          <df name="giappi">
+            <in>Bitmap.cpp</in>
+            <in>Canvas.cpp</in>
+            <in>Debug.cpp</in>
+            <in>Display.cpp</in>
+            <in>Graphics.cpp</in>
+            <in>KeyEventListener.cpp</in>
+            <in>MouseEventListener.cpp</in>
+            <in>Program.cpp</in>
+            <in>Timer.cpp</in>
+            <in>Timer.h</in>
+            <in>Window.cpp</in>
+          </df>
+        </df>
+        <df name="game">
+          <df name="gamestate">
+            <in>GameState.cpp</in>
+            <in>Paint.cpp</in>
+            <in>Paint.h</in>
+            <in>State_First.cpp</in>
+            <in>Tetris.cpp</in>
+          </df>
+          <in>Application.cpp</in>
+          <in>EventListenerCenter.cpp</in>
+          <in>GameStateCenter.cpp</in>
+        </df>
+        <in>Main.cpp</in>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>nbproject/private/launcher.properties</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <flagsDictionary>
+        <element flagsID="0" commonFlags="-O1 -std=c++11"/>
+        <element flagsID="1"
+                 commonFlags="-mtune=generic -march=x86-64 -g -O2 -fstack-protector-strong"/>
+      </flagsDictionary>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>bin/MyProgram</executablePath>
+          <cTool>
+            <standard>10</standard>
+            <incDir>
+              <pElem>/usr/include/SDL2</pElem>
+            </incDir>
+          </cTool>
+          <ccTool>
+            <standard>8</standard>
+            <incDir>
+              <pElem>lib/SDL2/include</pElem>
+              <pElem>src</pElem>
+            </incDir>
+          </ccTool>
+        </makeTool>
+        <preBuild>
+          <preBuildCommandWorkingDir>.</preBuildCommandWorkingDir>
+          <preBuildCommand></preBuildCommand>
+        </preBuild>
+      </makefileType>
+      <item path="../SDL2_image-2.0.1/IMG.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_bmp.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_gif.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_jpg.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_lbm.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_pcx.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_png.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>/usr/include/libpng12</pElem>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_pnm.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_tga.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_tif.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_webp.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>/usr/include/webp</pElem>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_xcf.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_xpm.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="../SDL2_image-2.0.1/IMG_xv.c" ex="false" tool="0" flavor2="3">
+        <cTool flags="1">
+          <incDir>
+            <pElem>../SDL2_image-2.0.1</pElem>
+          </incDir>
+        </cTool>
+      </item>
+      <item path="src/Main.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Bitmap.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Canvas.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Debug.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Display.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Graphics.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/KeyEventListener.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/MouseEventListener.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Program.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/com/giappi/Timer.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/com/giappi/Timer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/com/giappi/Window.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/Application.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/EventListenerCenter.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/GameStateCenter.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/gamestate/GameState.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/gamestate/Paint.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/game/gamestate/Paint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/game/gamestate/State_First.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="src/game/gamestate/Tetris.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

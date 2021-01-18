@@ -1,0 +1,4 @@
+
+
+BUILD:
+run `make`
