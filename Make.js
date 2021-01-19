@@ -94,8 +94,8 @@ var remove = function(value, arr)
 var sources = scandir(PROJECT_DIR + "/src").filter(file => file.match(/\.cpp$/));
 sources.push(PROJECT_DIR + "/lib/stackblur/stackblur.cpp");
 
-var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace("${PROJECT_DIR}", PROJECT_DIR);
-var libraries = "-lm -lSDL2 -lSDL2_image";
+var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace(/\$\{PROJECT_DIR\}/g, PROJECT_DIR);
+var libraries = "-lm -lSDL2 -lSDL2_image -lpthread";
 var flags = "-O0 -g -ggdb  -std=c++11 -emit-llvm -fPIC";
 var cc = "clang++";
 var options = "";
@@ -115,6 +115,10 @@ if(OS.platform() == "win32")
 }
 var link_flags = "";
 var link_options = "";
+
+echo ("\n");
+echo ("-- Include Directories --\n", fg.cyan);
+echo ("    " + includes + "\n");
 
 echo ("\n");
 echo ("-- Compiling --\n\n", fg.cyan);
