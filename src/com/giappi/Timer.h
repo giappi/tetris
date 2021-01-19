@@ -12,18 +12,25 @@
 
 typedef std::function<void()> CallbackFunction;
 typedef unsigned long long    UnsignedInteger;
+const long SECOND = 1000000000L;
+const long MILISECOND = 1000000L;
 
 class Timer
 {
 public:
     UnsignedInteger setTimeOut(CallbackFunction callback, UnsignedInteger timeout_ns);
+    UnsignedInteger setInterval(CallbackFunction callback, UnsignedInteger timeout_ns);
     void clearTimeOut(UnsignedInteger timeOutId);
+    void clearInterval(UnsignedInteger intervalId);
     void Update();
     Timer();
     virtual ~Timer();
+
+    UnsignedInteger setInterval_thread(CallbackFunction callback, UnsignedInteger timeout_ns);
+    UnsignedInteger setTimeOut_thread(CallbackFunction callback, UnsignedInteger timeout_ns);
 private:
-    void* callbacks = 0;
-    void* timePoint = 0;
+    void* callbackInfoList = 0;
+    void* threadList = 0;
     UnsignedInteger timerIncrement = 0;
 };
 

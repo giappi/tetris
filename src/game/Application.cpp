@@ -2,7 +2,7 @@
 #include "../game/gamestate/Tetris.h"
 #include "../utils/Memory.h"
 #include "gamestate/Paint.h"
-#include "../com/giappi/Timer.h"
+#include "com/giappi/Timer.h"
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -19,12 +19,9 @@ Application::~Application()
 
 void __main_loop__()
 {
-	//Handle events on queue
-    TIMER.Update();
+    //TIMER.Update();
+    //Handle events on queue
 	EventListenerCenterS::GetInstance()->Update();
-	GameStateCenterS::GetInstance()->Update();
-	GameStateCenterS::GetInstance()->Draw();
-
 }
 
 
@@ -41,6 +38,13 @@ void Application::Run()
     GameState* tetris = new Tetris();
 	//GameState* logo = new LogoDisovle();
 	GameStateCenterS::GetInstance()->PushState(tetris);
+    
+    // Game Interval
+    TIMER.setInterval_thread([]()
+    {
+        GameStateCenterS::GetInstance()->Update();
+        GameStateCenterS::GetInstance()->Draw();
+    }, 20*MILISECOND);
 
 	//Main loop flag
 	running = true;
@@ -54,7 +58,7 @@ void Application::Run()
 	{
 		__main_loop__();
 		//Wait 100 miliseconds
-		SDL_Delay(20);
+		SDL_Delay(1);
 	}
 
 #endif
