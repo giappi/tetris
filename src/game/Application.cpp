@@ -35,34 +35,33 @@ void Application::Run()
 		return;
 	}
 
-    GameState* tetris = new Tetris();
-	//GameState* logo = new LogoDisovle();
-	GameStateCenterS::GetInstance()->PushState(tetris);
+	GameStateCenterS::GetInstance()->PushState(new Tetris());
     
     // Game Interval
-    TIMER.setInterval_thread([]()
+    auto gameInterval = TIMER.setInterval([]()
     {
         GameStateCenterS::GetInstance()->Update();
         GameStateCenterS::GetInstance()->Draw();
     }, 20*MILISECOND);
 
+    __printf__("[I] Begin Main Loop");
 	//Main loop flag
-	running = true;
 
 #ifdef __EMSCRIPTEN__
     // void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop);
     emscripten_set_main_loop(__main_loop__, 30, 1);
 #else
+    m_running = true;
 	//While application is running
-	while (running)
+	while (m_running)
 	{
 		__main_loop__();
 		//Wait 100 miliseconds
 		SDL_Delay(1);
 	}
-
 #endif
-    Memory::Delete(tetris);
+    __printf__("[D] Exit main loop");
+    TIMER.clearInterval(gameInterval);
 	EventListenerCenterS::DestroyInstance();
 	GameStateCenterS::DestroyInstance();
 	GameS::DestroyInstance();
@@ -82,6 +81,6 @@ void Application::OnPause()
 
 void Application::OnClose()
 {
-	running = false;
+	m_running = false;
 }
 

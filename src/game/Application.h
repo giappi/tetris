@@ -19,7 +19,7 @@ public:
 	void OnPause();
 	void OnClose();
 private:
-	bool running = false;
+	bool m_running = false;
 
 	void Update();
 

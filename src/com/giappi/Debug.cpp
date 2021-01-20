@@ -60,7 +60,7 @@ void __print_time__()
 
 int __printf__(const char *fmt, ...)
 {
-	printf("  ");
+	printf("");
 	__print_time__();
 
 	va_list args;

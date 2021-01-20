@@ -10,44 +10,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/gamestate/GameState.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Debug.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/MouseEventListener.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/gamestate/Tetris.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Window.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Program.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Canvas.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Bitmap.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Window.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Canvas.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/Application.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Timer.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/Make.js</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Debug.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/EventListenerCenter.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/gamestate/Tetris.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/tools/tool-list.txt</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/MouseEventListener.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Graphics.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/Application.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Timer.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/KeyEventListener.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/Singleton.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/.vscode/launch.json</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/GameStateCenter.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/tools/colorama/INSTALL.py</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/EventListenerCenter.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/.gitignore</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Program.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Display.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Graphics.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/.gitattributes</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/lib/stackblur/stackblur.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Display.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/GameStateCenter.h</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/KeyEventListener.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/game/gamestate/GameState.cpp</file>
-            <file>file:/home/hg/NetBeansProjects/Tetris/src/com/giappi/Bitmap.cpp</file>
         </group>
     </open-files>
 </project-private>

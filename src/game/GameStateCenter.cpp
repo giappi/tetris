@@ -14,7 +14,7 @@ GameStateCenter::GameStateCenter()
 
 
 	//Create window, TODO: Make it better
-	this->sdl_Window = SDL_CreateWindow("Người đan chữ xếp hình", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 440, SDL_WINDOW_SHOWN);
+	this->sdl_Window = SDL_CreateWindow(u8"Người đan chữ xếp hình", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 440, SDL_WINDOW_SHOWN);
 	if (this->sdl_Window == NULL)
 	{
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -31,7 +31,11 @@ GameStateCenter::GameStateCenter()
 
 GameStateCenter::~GameStateCenter()
 {
-	Memory::Delete(canvas);;
+    for(auto state : gamestates)
+    {
+        delete state;
+    }
+	Memory::Delete(canvas);
 	SDL_DestroyWindow(this->sdl_Window);
 	this->sdl_Window = NULL;
 }

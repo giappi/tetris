@@ -19,10 +19,10 @@ Tetris::Tetris()
 {
     
     printf("[D] Start Timer\n");
-    auto t0 = std::chrono::system_clock::now().time_since_epoch();
-    TIMER.setTimeOut_thread([t0]()
+    auto t0 = std::chrono::system_clock::now();
+    TIMER.setTimeOut([t0]()
     {
-        auto t1 = std::chrono::system_clock::now().time_since_epoch();
+        auto t1 = std::chrono::system_clock::now();
         printf("[D] Time out: %f\n", std::chrono::duration<double>(t1 - t0).count());
     }, 5000000000);
     
@@ -30,7 +30,7 @@ Tetris::Tetris()
     
     currentTetrimino = &Tetriminos::O;
     
-    timerDrop = TIMER.setInterval_thread([this]()
+    timerDrop = TIMER.setInterval([this]()
     {
         currentTetriminoY += 1;
         if(currentTetriminoY > 20)
@@ -44,6 +44,7 @@ Tetris::Tetris()
 
 Tetris::~Tetris()
 {
+    __printf__("[D] Tetris::~Tetris");
     TIMER.clearTimeOut(timerDrop);
 }
 
