@@ -26,7 +26,7 @@ Tetris::Tetris()
         printf("[D] Time out: %f\n", std::chrono::duration<double>(t1 - t0).count());
     }, 5000000000);
     
-    //Tetrimino collection[] = {Tetriminos::O, Tetriminos::I, Tetriminos::T, Tetriminos::J, Tetriminos::L, Tetriminos::S, Tetriminos::Z};
+    Tetrimino collection[] = {Tetriminos::O, Tetriminos::I, Tetriminos::T, Tetriminos::J, Tetriminos::L, Tetriminos::S, Tetriminos::Z};
     
     currentTetrimino = &Tetriminos::O;
     

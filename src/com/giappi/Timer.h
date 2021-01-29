@@ -19,8 +19,6 @@ const long MILISECOND = 1000000L;
 class Timer
 {
 public:
-    UnsignedInteger setTimeOutSync(Callback callback, UnsignedInteger timeout_ns);
-    UnsignedInteger setIntervalSync(Callback callback, UnsignedInteger timeout_ns);
     void clearTimeOut(UnsignedInteger timeOutId);
     void clearInterval(UnsignedInteger intervalId);
     void Update();
@@ -31,6 +29,10 @@ public:
     UnsignedInteger setTimeOut(Callback callback, UnsignedInteger timeout_ns);
 private:
     UnsignedInteger takeThreadIdIncrement();
+    UnsignedInteger setTimeOutSync(Callback callback, UnsignedInteger timeout_ns);
+    UnsignedInteger setTimeOutAsync(Callback callback, UnsignedInteger timeout_ns);
+    UnsignedInteger setIntervalSync(Callback callback, UnsignedInteger timeout_ns);
+    UnsignedInteger setIntervalAsync(Callback callback, UnsignedInteger timeout_ns);
 private:
     void* properties = 0;
     void* callbackInfoList = 0;

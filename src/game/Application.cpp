@@ -19,7 +19,7 @@ Application::~Application()
 
 void __main_loop__()
 {
-    //TIMER.Update();
+    TIMER.Update();
     //Handle events on queue
 	EventListenerCenterS::GetInstance()->Update();
 }
@@ -49,7 +49,7 @@ void Application::Run()
 
 #ifdef __EMSCRIPTEN__
     // void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop);
-    emscripten_set_main_loop(__main_loop__, 30, 1);
+    emscripten_set_main_loop(__main_loop__, 60/*fps*/, 1);
 #else
     m_running = true;
 	//While application is running
@@ -57,7 +57,7 @@ void Application::Run()
 	{
 		__main_loop__();
 		//Wait 100 miliseconds
-		SDL_Delay(1);
+		SDL_Delay(10);
 	}
 #endif
     __printf__("[D] Exit main loop");

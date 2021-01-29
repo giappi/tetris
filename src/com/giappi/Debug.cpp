@@ -71,9 +71,16 @@ int __printf__(const char *fmt, ...)
 		if (*fmt == '%')
 		{
 			char sign = *(++fmt);
-			if (sign == 'd')
+			if (sign == 'i' || sign == 'd')
 			{
 				int number = (int)va_arg(args, int);
+				std::string value = std::to_string(number);
+				__print_value__(value.c_str(), COLOR_NUMBER);
+			}
+			else
+			if (sign == 'u')
+			{
+				unsigned long long number = (unsigned long long)va_arg(args, unsigned long long);
 				std::string value = std::to_string(number);
 				__print_value__(value.c_str(), COLOR_NUMBER);
 			}
@@ -84,7 +91,8 @@ int __printf__(const char *fmt, ...)
 				std::string value = std::to_string(number);
 				__print_value__(value.c_str(), COLOR_NUMBER);
 			}
-			else if (*fmt == 's')
+			else
+			if (*fmt == 's')
 			{
 				std::string value = (std::string("'") + std::string(va_arg(args, char*)) + std::string("'")).c_str();
 				__print_value__(value.c_str(), COLOR_STRING);

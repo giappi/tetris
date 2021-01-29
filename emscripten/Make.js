@@ -1,5 +1,6 @@
 #!/usr/bin/node
 
+/* global process */
 "use strict";
 
 const PROGRAM_NAME="Tetris";
@@ -90,9 +91,9 @@ var remove = function(value, arr)
 var sources = scandir(PROJECT_DIR + "/src").filter(file => file.match(/\.cpp$/));
 sources.push(PROJECT_DIR + "/lib/stackblur/stackblur.cpp");
 
-var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace("${PROJECT_DIR}", PROJECT_DIR);
-var libraries = "../lib/SDL2/lib/emscripten/libSDL2.bc";
-var flags = "-O3 -g -std=c++11";
+var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace(/\$\{PROJECT_DIR\}/g, PROJECT_DIR);
+var libraries = "";
+var flags = "-std=c++11 -O0 -g4 --source-map-base http://localhost:8000/emscripten/bin/ -s WASM=1 -s ASSERTIONS=1 -s SAFE_HEAP=1";
 var cc = "em++";
 if(OS.platform() == "win32")
 {
@@ -104,7 +105,7 @@ if(OS.platform() == "win32")
 var programName = "-o bin/Tetris.html";
 var link = "em++";
 var link_flags = "";
-var link_options = "-O3 -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 --use-preload-plugins --preload-file ../res@/res --shell-file template/to-yeu-cau.html";
+var link_options = " -O0 -g4 --source-map-base http://localhost:8000/emscripten/bin/ -s WASM=1 -frtti -s ALLOW_MEMORY_GROWTH=1  -s USE_SDL=2 -s USE_SDL_IMAGE=2  --use-preload-plugins --preload-file ../res@/res "; //"--shell-file template/to-yeu-cau.html";
 
 echo ("\n");
 echo ("-- Compiling --\n\n", fg.cyan);

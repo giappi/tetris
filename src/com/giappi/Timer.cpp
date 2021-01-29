@@ -15,8 +15,9 @@
 #include <condition_variable>
 
 
-typedef std::chrono::system_clock               SystemClock;
-typedef std::chrono::system_clock::time_point   TimePoint;
+//typedef std::chrono::system_clock               Clock;
+typedef std::chrono::steady_clock               Clock;
+typedef Clock::time_point                       TimePoint;
 typedef std::chrono::nanoseconds                NanoSecond;
 typedef bool                                    Boolean;
 typedef std::function<void()>                   CallbackFunction;
@@ -27,7 +28,7 @@ struct CallbackInfo
 {
     CallbackFunction    callback = {};
     TimePoint           timeOutPoint = TimePoint(NanoSecond(0));
-    Boolean             interval = 0;
+    UnsignedInteger     interval = 0;
     CallbackInfo
     (
         CallbackFunction    callback,
@@ -63,14 +64,24 @@ inline MapOfThread&     GET_THREAD(void* threadMap)
 
 Timer::Timer()
 {
+    __printf__("[I] *Timer");
     callbackInfoList    = new MapOfCallback();
     threadList          = new MapOfThread();
-    __printf__("Timer::Timer()");
+}
+
+UnsignedInteger Timer::setTimeOut(Callback callback, UnsignedInteger timeout_ns)
+{
+    return setTimeOutSync(callback, timeout_ns);
+}
+
+UnsignedInteger Timer::setInterval(Callback callback, UnsignedInteger timeout_ns)
+{
+    return setIntervalSync(callback, timeout_ns);
 }
 
 UnsignedInteger Timer::setTimeOutSync(Callback callback, UnsignedInteger timeout_ns)
 {
-    auto t = SystemClock::now() + NanoSecond(timeout_ns);
+    auto t = Clock::now() + NanoSecond(timeout_ns);
     MapOfCallback& callbacks = GET_CALLBACK(callbackInfoList);
     callbacks[timerIncrement] = CallbackInfo(callback, t);
     return timerIncrement++;
@@ -78,51 +89,55 @@ UnsignedInteger Timer::setTimeOutSync(Callback callback, UnsignedInteger timeout
 
 UnsignedInteger Timer::setIntervalSync(Callback callback, UnsignedInteger timeout_ns)
 {
-    auto t = SystemClock::now() + NanoSecond(timeout_ns);
+    auto t = Clock::now() + NanoSecond(timeout_ns);
     MapOfCallback& callbacks = GET_CALLBACK(callbackInfoList);
     callbacks[timerIncrement] = CallbackInfo(callback, t, timeout_ns);
     return timerIncrement++;
 }
 
-UnsignedInteger Timer::setInterval(Callback callback, UnsignedInteger timeout_ns)
-{
-    MapOfThread& threads = GET_THREAD(threadList);
-    UnsignedInteger threadId = takeThreadIdIncrement();
-    threads[threadId] = ThreadInfo();
-    const bool& isRunning = threads[threadId].isRunning;
-    threads[threadId].thread = Thread([callback, timeout_ns, &isRunning]()
-    {
-        while(isRunning)
-        {
-            TimePoint timeNext  = SystemClock::now() + NanoSecond(timeout_ns);
-            callback();
-            // sleep util next interval
-            std::this_thread::sleep_until(timeNext);
-        }
-    });
-    return threadId;
-}
+ UnsignedInteger Timer::setIntervalAsync(Callback callback, UnsignedInteger timeout_ns)
+ {
+     MapOfThread& threads = GET_THREAD(threadList);
+     UnsignedInteger threadId = takeThreadIdIncrement();
+     threads[threadId] = ThreadInfo();
+     const bool& isRunning = threads[threadId].isRunning;
+     threads[threadId].thread = Thread([callback, timeout_ns, &isRunning]()
+     {
+         while(isRunning)
+         {
+             TimePoint timeNext  = Clock::now() + NanoSecond(timeout_ns);
+             callback();
+             // sleep util next interval
+             std::this_thread::sleep_until(timeNext);
+         }
+     });
+     return threadId;
+ }
 
-UnsignedInteger Timer::setTimeOut(Callback callback, UnsignedInteger timeout_ns)
-{
-    MapOfThread& threads = GET_THREAD(threadList);
-    UnsignedInteger threadId = takeThreadIdIncrement();
-    threads[threadId] = ThreadInfo();
-    threads[threadId].thread = Thread([callback, timeout_ns]()
-    {
-        std::this_thread::sleep_for(NanoSecond(timeout_ns));
-        callback();
-    });
-    return threadId;
-}
+ UnsignedInteger Timer::setTimeOutAsync(Callback callback, UnsignedInteger timeout_ns)
+ {
+     MapOfThread& threads = GET_THREAD(threadList);
+     UnsignedInteger threadId = takeThreadIdIncrement();
+     threads[threadId] = ThreadInfo();
+     threads[threadId].thread = Thread([callback, timeout_ns]()
+     {
+         std::this_thread::sleep_for(NanoSecond(timeout_ns));
+         callback();
+     });
+     return threadId;
+ }
 
 
 
 void Timer::clearTimeOut(UnsignedInteger id)
 {
-    MapOfThread& threads = GET_THREAD(threadList);
-    threads[id].isRunning = false;
-    threads[id].thread.join();
+    // MapOfThread& threads = GET_THREAD(threadList);
+    // threads[id].isRunning = false;
+    // threads[id].thread.join();
+
+    MapOfCallback& callbacks = GET_CALLBACK(callbackInfoList);
+    callbacks.erase(id);
+
 }
 
 void Timer::clearInterval(UnsignedInteger id)
@@ -145,7 +160,7 @@ void Timer::Update()
     {
         auto& callbackId     = pair.first;
         auto& callbackInfo   = pair.second;
-        if(SystemClock::now() > callbackInfo.timeOutPoint)
+        if(Clock::now() > callbackInfo.timeOutPoint)
         {
             callbackInfo.callback();
             if(callbackInfo.interval == 0)
@@ -177,6 +192,8 @@ UnsignedInteger Timer::takeThreadIdIncrement()
 
 Timer::~Timer()
 {
+    __printf__("[I] ~Timer");
+
     if(callbackInfoList)
     {
         delete ((MapOfCallback*) callbackInfoList);
