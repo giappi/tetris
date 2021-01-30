@@ -15,6 +15,7 @@ const FileSystem           = require('fs');
 const childProcess         = require('child_process');
 const exec                 = childProcess.execSync;
 const spawn                = childProcess.spawn;
+const spawnSync            = childProcess.spawnSync;
 const crypto               = require('crypto');
 const OS                   = require('os');
 const readline             = require("readline");
@@ -94,11 +95,12 @@ var remove = function(value, arr)
 var sources = scandir(PROJECT_DIR + "/src").filter(file => file.match(/\.cpp$/));
 sources.push(PROJECT_DIR + "/lib/stackblur/stackblur.cpp");
 
-var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace(/\$\{PROJECT_DIR\}/g, PROJECT_DIR);
-var libraries = "-lm -lSDL2 -lSDL2_image -lpthread";
-var flags = "-O0 -g -ggdb  -std=c++11 -emit-llvm -fPIC";
+var includes    = ["-I", `${PROJECT_DIR}/lib/SDL2/include`, "-I", `${PROJECT_DIR}/src`];
+var libraries   = ["-lm", "-lSDL2", "-lSDL2_image", "-lpthread"];
+var flags       = ["--std=c++11", "-O0", "-emit-llvm", "-fPIC"];
+var flags_debug = ["-g", "-ggdb"];
 var cc = "clang++";
-var options = "";
+var options = [];
 if(OS.platform() == "win32")
 {
     cc = "clang++.exe";
@@ -134,7 +136,7 @@ for(let i in sources)
     let c = sources[i];
     let o = "obj/" + i + ".bc";
     objects.push(o);
-    commands.push({file: c , line: [cc, ...flags.split(" ") , "-c" , c , ...includes.split(" "), "-o" , o ]});
+    commands.push({file: c , line: [cc, ...flags, ...flags_debug , "-c" , c , ...includes, "-o" , o ]});
 
 }
 
@@ -182,7 +184,35 @@ function compile()
 
         };
         
-        if(!fileExists(cacheObj) || (fileExists(file) && (md5f(cacheObj) != md5f(file))))
+        //console.log(command.line);
+        //console.log(command.line[command.line.indexOf("-c") + 1]);
+        // check modifed source code
+        let _args = ["-E", ...flags , "-c" , command.line[command.line.indexOf("-c")+1] , ...includes];
+        let _result = spawnSync("clang++", _args , {encoding: "utf-8" });
+        //console.log(_args.join(" "));
+        //console.log(_result);
+
+        if(_result.stderr)
+        {
+            console.error("_result.stderr:");
+            console.error(_result.stderr);
+            return;
+        }
+        
+        let cache = _result.stdout;
+        
+        let md5Old = "";
+        if(fileExists(cacheObj))
+        {
+            md5Old = md5f(cacheObj);
+        }
+        let md5New = "";
+        md5New = md5sum(cache);
+        
+        let isNew     = ((md5Old + md5New) == "");
+        let isChanged = (isNew || md5Old != md5New);
+        
+        if(isChanged)
         {
 
             compiling_files.push(command.file);
@@ -198,7 +228,7 @@ function compile()
                 if(exitcode == 0)
                 {
                     onCompleted(id, false);
-                    copyfile(file, cacheObj);
+                    FileSystem.writeFileSync(cacheObj, cache, {flag:"w"});
                 }
                 else
                 {
@@ -233,13 +263,12 @@ function linkProgram()
     echo("\n");
     echo("-- BUILD COMPLETE --\n\n");
     
-    var link_cmd = [link, link_flags, link_options , objects.join(" "), libraries, programName].join(" ");
+    var link_cmd = [link, link_flags, link_options , objects.join(" "), ...libraries, programName].join(" ");
     
     echo ("\n");
     echo ("-- Linking program --\n", fg.cyan);
     //if(uncached_files > 0)
     {
-        //echo("[i] " + link_cmd + "\n", fg.green);
         exec(link_cmd);
     }
     echo ("-- Done --\n\n", fg.cyan);
@@ -271,9 +300,14 @@ function scandir(dir)
     return result;
 }
 
-function copyfile(source, target)
+function copyFile(source, target)
 {
     FileSystem.createReadStream(source).pipe(FileSystem.createWriteStream(target));
+}
+
+function moveFile(source, target)
+{
+    FileSystem.renameSync(source, target);
 }
 
 function fileExists(file)
@@ -286,5 +320,17 @@ function md5f(file)
     var data = FileSystem.readFileSync(file);
     return crypto.createHash('md5').update(data).digest("hex");
 }
+
+function md5sum(data)
+{
+    return crypto.createHash('md5').update(data).digest("hex");
+}
+
+function runChildProcess(command, callback)
+{
+    
+}
+
+
 
 ///////////////////////////////////////////////////////////////////

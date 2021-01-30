@@ -49,7 +49,7 @@ void Application::Run()
 
 #ifdef __EMSCRIPTEN__
     // void emscripten_set_main_loop(em_callback_func func, int fps, int simulate_infinite_loop);
-    emscripten_set_main_loop(__main_loop__, 60/*fps*/, 1);
+    emscripten_set_main_loop(__main_loop__, 1/*fps*/, 1);
 #else
     m_running = true;
 	//While application is running

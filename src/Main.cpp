@@ -14,14 +14,12 @@
 int main(int argc, char* args[])
 {
 
-
-
-	printf(">> Program lauch at `%s`\n", *args);
+	__printf__("[I] Program lauch at `%s`\n", *args);
 
 	GameS::GetInstance()->Run();
 
-	printf("\n>> Press any key...\n");
-	getchar();
+//	printf("\n>> Press any key...\n");
+//	getchar();
 
 	return 0;
 }

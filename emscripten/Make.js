@@ -12,6 +12,7 @@ const FileSystem           = require('fs');
 const childProcess         = require('child_process');
 const exec                 = childProcess.execSync;
 const spawn                = childProcess.spawn;
+const spawnSync            = childProcess.spawnSync;
 const crypto               = require('crypto');
 const OS                   = require('os');
 const readline             = require("readline");
@@ -91,10 +92,12 @@ var remove = function(value, arr)
 var sources = scandir(PROJECT_DIR + "/src").filter(file => file.match(/\.cpp$/));
 sources.push(PROJECT_DIR + "/lib/stackblur/stackblur.cpp");
 
-var includes = "-I ${PROJECT_DIR}/lib/SDL2/include -I ${PROJECT_DIR}/src".replace(/\$\{PROJECT_DIR\}/g, PROJECT_DIR);
-var libraries = "";
-var flags = "-std=c++11 -O0 -g4 --source-map-base http://localhost:8000/emscripten/bin/ -s WASM=1 -s ASSERTIONS=1 -s SAFE_HEAP=1";
+var includes    = ["-I", `${PROJECT_DIR}/lib/SDL2/include`, "-I", `${PROJECT_DIR}/src`];
+var libraries   = [];
+var flags       = ["--std=c++11", "-O0"];
+var flags_debug = ["-g4"];
 var cc = "em++";
+var options = [];
 if(OS.platform() == "win32")
 {
     cc = "em++.bat";
@@ -106,6 +109,10 @@ var programName = "-o bin/Tetris.html";
 var link = "em++";
 var link_flags = "";
 var link_options = " -O0 -g4 --source-map-base http://localhost:8000/emscripten/bin/ -s WASM=1 -frtti -s ALLOW_MEMORY_GROWTH=1  -s USE_SDL=2 -s USE_SDL_IMAGE=2  --use-preload-plugins --preload-file ../res@/res "; //"--shell-file template/to-yeu-cau.html";
+
+echo ("\n");
+echo ("-- Include Directories --\n", fg.cyan);
+echo ("    " + includes + "\n");
 
 echo ("\n");
 echo ("-- Compiling --\n\n", fg.cyan);
@@ -121,7 +128,7 @@ for(let i in sources)
     let c = sources[i];
     let o = "obj/" + i + ".bc";
     objects.push(o);
-    commands.push({file: c , line: [cc, ...flags.split(" ") , "-c" , c , ...includes.split(" "), "-o" , o ]});
+    commands.push({file: c , line: [cc, ...flags, ...flags_debug , "-c" , c , ...includes, "-o" , o ]});
 
 }
 
@@ -169,7 +176,35 @@ function compile()
 
         };
         
-        if(!fileExists(cacheObj) || (fileExists(file) && (md5f(cacheObj) != md5f(file))))
+        //console.log(command.line);
+        //console.log(command.line[command.line.indexOf("-c") + 1]);
+        // check modifed source code
+        let _args = ["-E", ...flags , "-c" , command.line[command.line.indexOf("-c")+1] , ...includes];
+        let _result = spawnSync("clang++", _args , {encoding: "utf-8" });
+        //console.log(_args.join(" "));
+        //console.log(_result);
+
+        if(_result.stderr)
+        {
+            console.error("_result.stderr:");
+            console.error(_result.stderr);
+            return;
+        }
+        
+        let cache = _result.stdout;
+        
+        let md5Old = "";
+        if(fileExists(cacheObj))
+        {
+            md5Old = md5f(cacheObj);
+        }
+        let md5New = "";
+        md5New = md5sum(cache);
+        
+        let isNew     = ((md5Old + md5New) == "");
+        let isChanged = (isNew || md5Old != md5New);
+        
+        if(isChanged)
         {
 
             compiling_files.push(command.file);
@@ -180,12 +215,13 @@ function compile()
             let child_process = spawn(command.line[0], command.line.slice(1) , {stdio: "inherit", encoding: "utf-8" });
             
             child_process.on("error", function(e) { echo("[E]" + e);});
+
             child_process.on('close', function(exitcode)
             {
                 if(exitcode == 0)
                 {
                     onCompleted(id, false);
-                    copyfile(file, cacheObj);
+                    FileSystem.writeFileSync(cacheObj, cache, {flag:"w"});
                 }
                 else
                 {
@@ -257,9 +293,14 @@ function scandir(dir)
     return result;
 }
 
-function copyfile(source, target)
+function copyFile(source, target)
 {
     FileSystem.createReadStream(source).pipe(FileSystem.createWriteStream(target));
+}
+
+function moveFile(source, target)
+{
+    FileSystem.renameSync(source, target);
 }
 
 function fileExists(file)
@@ -272,5 +313,17 @@ function md5f(file)
     var data = FileSystem.readFileSync(file);
     return crypto.createHash('md5').update(data).digest("hex");
 }
+
+function md5sum(data)
+{
+    return crypto.createHash('md5').update(data).digest("hex");
+}
+
+function runChildProcess(command, callback)
+{
+    
+}
+
+
 
 ///////////////////////////////////////////////////////////////////
