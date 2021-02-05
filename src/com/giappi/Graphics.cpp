@@ -110,15 +110,18 @@ void Graphics::DrawText(const char* text,int x, int y, unsigned int color)
 void Graphics::DrawRect(int x0, int y0, int w, int h, unsigned int color)
 {
     Bitmap* bitmap = this->canvas->bitmap;
-    for(int x = x0; x <= x0 + w; x++)
+    auto x1 = x0 + w, y1 = y0 + h;
+    x1 > bitmap->GetWidth()  && (x1 = bitmap->GetWidth());
+    y1 > bitmap->GetHeight() && (y1 = bitmap->GetHeight());
+    for(int x = x0; x <= x1; x++)
     {
-        bitmap->SetColor(x, y0      , color);
-        bitmap->SetColor(x, y0 + h  , color);
+        bitmap->SetColor(x, y0 , color);
+        bitmap->SetColor(x, y1 , color);
     }
-    for(int y = y0; y <= y0 + h; y++)
+    for(int y = y0; y <= y1; y++)
     {
-        bitmap->SetColor(x0    , y , color);
-        bitmap->SetColor(x0 + w, y , color);
+        bitmap->SetColor(x0 , y , color);
+        bitmap->SetColor(x1 , y , color);
     }
 }
 
@@ -126,9 +129,12 @@ void Graphics::DrawRect(int x0, int y0, int w, int h, unsigned int color)
 void Graphics::FillRect(int x0, int y0, int w, int h, unsigned int color)
 {
     Bitmap* bitmap = this->canvas->bitmap;
-    for(int y = y0; y <= y0 + h; y++)
+    auto x1 = x0 + w, y1 = y0 + h;
+    x1 > bitmap->GetWidth()  && (x1 = bitmap->GetWidth());
+    y1 > bitmap->GetHeight() && (y1 = bitmap->GetHeight());
+    for(int y = y0; y <= y1; y++)
     {
-        for(int x = x0; x <= x0 + w; x++)
+        for(int x = x0; x <= x1; x++)
         {
             bitmap->SetColor(x, y, color);
         }
