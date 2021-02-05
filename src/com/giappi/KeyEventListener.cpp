@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   KeyEventListener.cpp
  * Author: giappi
- * 
+ *
  * Created on 2017-03-27, 20:40 PM
  */
 
@@ -13,15 +13,15 @@ std::vector<KeyEventListener*> KeyEventListener::listeners = std::vector<KeyEven
 
 KeyEventListener::KeyEventListener()
 {
-      
 
-	(KeyEventListener::listeners).push_back(this);
-	printf("--> Add KeyEventListener: %d\n", (int)listeners.size());
+
+    (KeyEventListener::listeners).push_back(this);
+    __printf__("--> Add KeyEventListener: %d\n", (int)listeners.size());
 
     /*
     SDL_Thread *thread;
     int         threadReturnValue;
-    
+
     //KeyEventListener::running = true;
 
     printf("\nSimple SDL_CreateThread test:");
@@ -47,8 +47,8 @@ KeyEventListener::KeyEventListener(const KeyEventListener& orig)
 
 KeyEventListener::~KeyEventListener()
 {
-	//remove listener
-	listeners.erase(std::remove(listeners.begin(), listeners.end(), this), listeners.end());
+    //remove listener
+    listeners.erase(std::remove(listeners.begin(), listeners.end(), this), listeners.end());
 }
 
 /*
@@ -57,11 +57,11 @@ int KeyEventListener::Listen(void* ptr)
     //Event handler
     SDL_Event e;
     bool running = true;
-    
+
     while(running)
     {
         //printf("Hello\n");
-        
+
         //Handle events on queue
         while( SDL_PollEvent( &e ) != 0 )
         {
@@ -101,29 +101,29 @@ int KeyEventListener::Listen(void* ptr)
 
         SDL_Delay(20);
     }
-	return 0;
+    return 0;
 }
 */
 
 void KeyEventListener::OnEvent(KeyEvent e)
 {
-	int keycode = e.keyCode;
-	if (e.type == KeyEvent::KEYDOWN)
-	{
-		for (unsigned int i = 0; i < listeners.size(); i++)
-		{
-			KeyEventListener* k = listeners[i];
-			__printf__(" --> called OnKeyDown(%d) in %s", keycode, typeid(*k).name());
-			k->OnKeyDown(keycode);
-		}
-	}
-	if (e.type == KeyEvent::KEYUP)
-	{
-		for (unsigned int i = 0; i < listeners.size(); i++)
-		{
-			KeyEventListener* k = listeners[i];
-			__printf__(" --> called OnKeyUp(%d) in %s", keycode, typeid(*k).name());
-			k->OnKeyUp(keycode);
-		}
-	}
+    int keycode = e.keyCode;
+    if (e.type == KeyEvent::KEYDOWN)
+    {
+        for (unsigned int i = 0; i < listeners.size(); i++)
+        {
+            KeyEventListener* k = listeners[i];
+            __printf__(" --> called OnKeyDown(%d) in %s", keycode, typeid(*k).name());
+            k->OnKeyDown(keycode);
+        }
+    }
+    if (e.type == KeyEvent::KEYUP)
+    {
+        for (unsigned int i = 0; i < listeners.size(); i++)
+        {
+            KeyEventListener* k = listeners[i];
+            __printf__(" --> called OnKeyUp(%d) in %s", keycode, typeid(*k).name());
+            k->OnKeyUp(keycode);
+        }
+    }
 }

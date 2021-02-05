@@ -9,10 +9,10 @@
 #define TIMER_H
 
 #include <functional>
+#include "com/giappi/Math.h"
 
 //typedef void (Callback)(void);
 typedef std::function<void()> Callback;
-typedef unsigned long long    UnsignedInteger;
 const long SECOND = 1000000000L;
 const long MILISECOND = 1000000L;
 

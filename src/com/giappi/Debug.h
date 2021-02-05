@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <stdio.h>
 #include <typeinfo>
 #include <assert.h>
 #include <chrono>
