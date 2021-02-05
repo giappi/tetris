@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Tetris.h
  * Author: Giappi
  *
@@ -9,34 +9,41 @@
 #define TETRIS_H
 
 #include "GameState.h"
-#include <initializer_list>
-#include <functional>
+#include "com/giappi/Math.h"
+
+#define MAX_TET_WIDTH   4
+#define MAX_TET_HEIGHT  4
+#define ROTATIONS_NUM   4
+
+struct TetShape : public FixedArray<FixedArray<Boolean, MAX_TET_WIDTH>, MAX_TET_HEIGHT>
+{
+    UnsignedInteger w = 0;
+    UnsignedInteger h = 0;
+};
+
+struct Point { Interger x; Interger y; };
 
 struct Tetrimino
 {
-    int     w       = 0;
-    int     h       = 0;
-    int*  shape     = 0;
-    Tetrimino(int w, int h, int* shape);
+    enum class Rotation {ANGLE_0 = 0, ANGLE_90 = 1, ANGLE_180 = 2, ANGLE_270 = 3};
+private:
+    /** rotation state */
+    Rotation                angle   = Rotation::ANGLE_0;
+    /** 4 shape of rotation state */
+    FixedArray<TetShape, ROTATIONS_NUM>     shapes = {};
+    FixedArray<Point,    ROTATIONS_NUM>     rotationPosition[4] = {};
+public:
+    Tetrimino(FixedArray<TetShape, 4>&& shapes);
     Tetrimino(){};
+    const UnsignedInteger   width()     const;
+    const UnsignedInteger   height()    const;
+    const Rotation          rotation()  const;
+    const Boolean           dot(const UnsignedInteger x, const UnsignedInteger y) const;
+    const void              rotate();
+    const void              rotateLeft();
+    const void              print() const;
 };
- 
-//template <const unsigned int W, const unsigned int H>
-//struct TetriminoSpecific : public Tetrimino
-//{
-//    int     w       = W;
-//    int     h       = H;
-//    bool    shape[H][W];
-//    TetriminoSpecific(bool shape[W][H]);
-//};
-//
-//typedef TetriminoSpecific<2, 2> Tetrimino_O;
-//typedef TetriminoSpecific<1, 4> Tetrimino_I;
-//typedef TetriminoSpecific<3, 2> Tetrimino_T;
-//typedef TetriminoSpecific<2, 4> Tetrimino_J;
-//typedef TetriminoSpecific<2, 4> Tetrimino_L;
-//typedef TetriminoSpecific<3, 2> Tetrimino_S;
-//typedef TetriminoSpecific<3, 2> Tetrimino_Z;
+
 
 struct Tetriminos
 {
@@ -57,17 +64,17 @@ class Tetris :
 public:
     Tetris();
     virtual ~Tetris();
-    
+
     virtual void Draw() override;
     virtual void Update() override;
     virtual void DrawCell(int i, int j);
     virtual void DrawBoard();
     virtual void DrawTetrimino(int i, int j, const Tetrimino& tet) const;
     virtual void PostDrawChanged();
-    
+
     virtual void OnKeyDown(int keycode) override;
 
-    
+
 private:
     int boardWidth      = 10;
     int boardHeight     = 21;
@@ -75,7 +82,7 @@ private:
     int boardX          = 10;
     int boardY          = 10;
     int isDrawChange    = true;
-    
+
     Tetrimino*  currentTetrimino    = 0;
     int         currentTetriminoX   = 0;
     int         currentTetriminoY   = 0;

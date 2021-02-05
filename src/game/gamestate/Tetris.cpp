@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   Tetris.cpp
  * Author: Giappi
- * 
+ *
  * Created on 2021-01-17, 20:38
  */
 
@@ -10,6 +10,11 @@
 #include "../../utils/Memory.h"
 #include "com/giappi/Timer.h"
 #include <chrono>
+#include <initializer_list>
+#include "cpp/lang/String.h"
+#include <cstdlib>
+
+#define ListLiteral std::initializer_list
 
 
 std::function<void()> drop;
@@ -17,29 +22,29 @@ UnsignedInteger timerDrop = 0;
 
 Tetris::Tetris()
 {
-    
-    printf("[D] Start Timer\n");
+
+    __printf__("[D] Start Timer\n");
     auto t0 = std::chrono::system_clock::now();
     TIMER.setTimeOut([t0]()
     {
         auto t1 = std::chrono::system_clock::now();
-        printf("[D] Time out: %f\n", std::chrono::duration<double>(t1 - t0).count());
+        __printf__("[D] Time out: %f\n", std::chrono::duration<double>(t1 - t0).count());
     }, 5000000000);
-    
-    Tetrimino collection[] = {Tetriminos::O, Tetriminos::I, Tetriminos::T, Tetriminos::J, Tetriminos::L, Tetriminos::S, Tetriminos::Z};
-    
-    currentTetrimino = &Tetriminos::O;
-    
+
+    currentTetrimino = &Tetriminos::T;
+
     timerDrop = TIMER.setInterval([this]()
     {
         currentTetriminoY += 1;
         if(currentTetriminoY > 20)
         {
             currentTetriminoY = 0;
+            FixedArray<Tetrimino*, 7> collection = { &Tetriminos::T, &Tetriminos::I, &Tetriminos::J, &Tetriminos::L, &Tetriminos::O, &Tetriminos::S, &Tetriminos::Z };
+            currentTetrimino = collection[rand()%7];
         }
         GameStateCenterS::GetInstance()->RequestRePaint();
     }, 1000000000);
- 
+
 }
 
 Tetris::~Tetris()
@@ -52,7 +57,7 @@ void Tetris::Draw()
 {
     // clear
     graphics->FillRect(10, 10, boardWidth*cellSize, boardHeight*cellSize, 0xFF000000);
-    
+
     if(currentTetrimino)
     {
         DrawTetrimino(currentTetriminoX, currentTetriminoY, *currentTetrimino);
@@ -74,14 +79,13 @@ void Tetris::Draw()
 
 void Tetris::DrawTetrimino(int x, int y, const Tetrimino& tet) const
 {
-    for(int j = 0; j < tet.h; j++)
+    for(int i = 0; i < tet.height(); i++)
     {
-        for(int i = 0; i < tet.w; i++)
+        for(int j = 0; j < tet.width(); j++)
         {
-            if(tet.shape[j*tet.w + i] == 1)
+            if(tet.dot(j, i) == true)
             {
-                graphics->FillRect(boardX + x*cellSize + i*cellSize, boardY + y*cellSize + j*cellSize, cellSize, cellSize, 0xFFFF00FF);
-                
+                graphics->FillRect(boardX + x*cellSize + j*cellSize, boardY + y*cellSize + i*cellSize, cellSize, cellSize, 0xFFFF00FF);
             }
         }
     }
@@ -99,7 +103,7 @@ void Tetris::DrawCell(int i, int j)
 
 void Tetris::Update()
 {
-    
+
 }
 
 void Tetris::OnKeyDown(int keycode)
@@ -116,27 +120,31 @@ void Tetris::OnKeyDown(int keycode)
         // ^
         case 1073741906:
         {
+            currentTetrimino->rotate();
+            PostDrawChanged();
             break;
         }
         // -->
         case 1073741903:
         {
-            currentTetriminoX + currentTetrimino->w < boardWidth ? currentTetriminoX++ : 0;
+            currentTetriminoX + currentTetrimino->width() < boardWidth ? currentTetriminoX++ : 0;
             PostDrawChanged();
             break;
         }
         // _
         case 1073741905:
         {
+            FixedArray<Tetrimino*, 7> collection = { &Tetriminos::T, &Tetriminos::I, &Tetriminos::J, &Tetriminos::L, &Tetriminos::O, &Tetriminos::S, &Tetriminos::Z };
+            currentTetrimino = collection[rand()%7];
+            PostDrawChanged();
             break;
         }
+        // p : print infomation
+        case 112:
+        {
+            currentTetrimino->print();
+        }
     }
-}
-
-
-
-Tetrimino::Tetrimino(int w, int h, int* shape) : w(w), h(h), shape(shape)
-{
 }
 
 void Tetris::PostDrawChanged()
@@ -145,11 +153,140 @@ void Tetris::PostDrawChanged()
 }
 
 
+Tetrimino::Tetrimino(FixedArray<TetShape, 4>&& shapes) : shapes(std::move(shapes))
+{
 
-Tetrimino Tetriminos::O = Tetrimino(2, 2,  new int[4] {1, 1, 1, 1});
-Tetrimino Tetriminos::I = Tetrimino(1, 4,  new int[4] {1, 1, 1, 1});
-Tetrimino Tetriminos::T = Tetrimino(3, 2,  new int[6] {1, 1, 1, 0, 1, 0});
-Tetrimino Tetriminos::J = Tetrimino(2, 4,  new int[8] {0, 1, 0, 1, 0, 1, 1, 1});
-Tetrimino Tetriminos::L = Tetrimino(2, 4,  new int[8] {1, 0, 1, 0, 1, 0, 1, 1});
-Tetrimino Tetriminos::S = Tetrimino(3, 2,  new int[6] {0, 1, 1, 1, 1, 0});
-Tetrimino Tetriminos::Z = Tetrimino(3, 2,  new int[6] {1, 1, 0, 0, 1, 0});
+}
+
+const UnsignedInteger Tetrimino::width() const
+{
+    return shapes[(UnsignedInteger)angle].w;
+}
+
+const UnsignedInteger Tetrimino::height() const
+{
+    return shapes[(UnsignedInteger)angle].h;
+}
+
+const Tetrimino::Rotation Tetrimino::rotation() const
+{
+    return angle;
+}
+
+const Boolean Tetrimino::dot(const UnsignedInteger x, const UnsignedInteger y) const
+{
+    return shapes[(UnsignedInteger)angle][y][x];
+}
+
+const void Tetrimino::rotate()
+{
+    angle = (Rotation) ((((UnsignedInteger) angle) + 1) % 4);
+}
+
+const void Tetrimino::rotateLeft()
+{
+    angle = (Rotation) ((((UnsignedInteger) angle) + 3) % 4);
+}
+
+const void Tetrimino::print() const
+{
+    __printf__("width: %d, height: %d\n", width(), height());
+    auto shape = shapes[(UnsignedInteger)angle];
+    for(int i = 0; i < shape.h; i++)
+    {
+        char s[shape.w+1];
+        for(int j = 0; j < shape.w; j++)
+        {
+            s[j] = shape[i][j] ? '#' : '-';
+        }
+        s[shape.w] = '\0';
+        __printf__("%s", s);
+    }
+    __printf__("\n");
+}
+
+
+
+inline Tetrimino MakeTetrimino(const ListLiteral<ListLiteral<Boolean>>&& matrix)
+{
+    int h = matrix.size(), w = 0;
+    TetShape data  =  {};
+    int _i = 0;
+    for(auto& list : matrix)
+    {
+        w = list.size();
+        data[_i] = {};
+        int _j = 0;
+        for(auto bit : list)
+        {
+            data[_i][_j] = bit;
+            ++_j;
+        }
+        ++_i;
+    }
+
+    data.h = h;
+    data.w = w;
+
+    TetShape shape_0 = {};
+    shape_0.h = data.h;
+    shape_0.w = data.w;
+    for(auto i = 0; i < h; i++)
+    {
+        shape_0[i] = {};
+        for(auto j = 0; j < w; j++)
+        {
+            shape_0[i][j] = data[i][j];
+        }
+    }
+
+    TetShape shape_1 = {};
+    shape_1.h = data.w;
+    shape_1.w = data.h;
+    for(auto i = 0; i < shape_1.h; i++)
+    {
+        shape_1[i] = {};
+        for(auto j = 0; j < shape_1.w; j++)
+        {
+            shape_1[i][j] = data[h-1-j][i];
+        }
+    }
+
+    TetShape shape_2 = {};
+    shape_2.h = data.h;
+    shape_2.w = data.w;
+    for(auto i = 0; i < shape_2.h; i++)
+    {
+        shape_2[i] = {};
+        for(auto j = 0; j < shape_2.w; j++)
+        {
+            shape_2[i][j] = data[h-1-i][w-1-j];
+        }
+    }
+
+    TetShape shape_3 = {};
+    shape_3.h = data.w;
+    shape_3.w = data.h;
+    for(auto i = 0; i < shape_3.h; i++)
+    {
+        shape_3[i] = {};
+        for(auto j = 0; j < shape_3.w; j++)
+        {
+            shape_3[i][j] = data[j][w-1-i];
+        }
+    }
+
+    FixedArray<TetShape, 4> shape_all = { std::move(shape_0), std::move(shape_1), std::move(shape_2), std::move(shape_3) };
+
+    return Tetrimino(std::move(shape_all));
+}
+
+
+
+Tetrimino Tetriminos::O = MakeTetrimino({{1, 1}, {1, 1}});
+Tetrimino Tetriminos::I = MakeTetrimino({{1, 1, 1, 1}});
+Tetrimino Tetriminos::T = MakeTetrimino({{1, 1, 1}, {0, 1, 0}});
+Tetrimino Tetriminos::J = MakeTetrimino({{0, 1}, {0, 1}, {0, 1}, {1, 1}});
+Tetrimino Tetriminos::L = MakeTetrimino({{1, 0}, {1, 0}, {1, 0}, {1, 1}});
+Tetrimino Tetriminos::S = MakeTetrimino({{0, 1, 1}, {1, 1, 0}});
+Tetrimino Tetriminos::Z = MakeTetrimino({{1, 1, 0}, {0, 1, 0}});
