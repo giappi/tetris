@@ -53,6 +53,7 @@ private:
 };
 
 typedef Singleton<GameStateCenter> GameStateCenterS;
+#define GAMESTATECENTER (*(Singleton<GameStateCenter>::GetInstance()))
 
 #endif /* GAMESTATECENTER_H */
 

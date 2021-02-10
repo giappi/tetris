@@ -41,9 +41,12 @@ Tetris::Tetris()
             currentTetriminoY = 0;
             FixedArray<Tetrimino*, 7> collection = { &Tetriminos::T, &Tetriminos::I, &Tetriminos::J, &Tetriminos::L, &Tetriminos::O, &Tetriminos::S, &Tetriminos::Z };
             currentTetrimino = collection[rand()%7];
+            currentTetrimino->reset();
         }
-        GameStateCenterS::GetInstance()->RequestRePaint();
+        RePaint();
     }, 1000000000);
+
+    RePaint();
 
 }
 
@@ -83,7 +86,7 @@ void Tetris::DrawTetrimino(int x, int y, const Tetrimino& tet) const
     {
         for(int j = 0; j < tet.width(); j++)
         {
-            if(tet.dot(j, i) == true)
+            if(tet.dotAt(j, i) == true)
             {
                 graphics->FillRect(boardX + x*cellSize + j*cellSize, boardY + y*cellSize + i*cellSize, cellSize, cellSize, 0xFFFF00FF);
             }
@@ -114,21 +117,21 @@ void Tetris::OnKeyDown(int keycode)
         case 1073741904:
         {
             currentTetriminoX > 0 ? currentTetriminoX-- : 0;
-            PostDrawChanged();
+            RePaint();
             break;
         }
         // ^
         case 1073741906:
         {
-            currentTetrimino->rotate();
-            PostDrawChanged();
+            Rotate();
+            RePaint();
             break;
         }
         // -->
         case 1073741903:
         {
             currentTetriminoX + currentTetrimino->width() < boardWidth ? currentTetriminoX++ : 0;
-            PostDrawChanged();
+            RePaint();
             break;
         }
         // _
@@ -136,7 +139,8 @@ void Tetris::OnKeyDown(int keycode)
         {
             FixedArray<Tetrimino*, 7> collection = { &Tetriminos::T, &Tetriminos::I, &Tetriminos::J, &Tetriminos::L, &Tetriminos::O, &Tetriminos::S, &Tetriminos::Z };
             currentTetrimino = collection[rand()%7];
-            PostDrawChanged();
+            currentTetrimino->reset();
+            RePaint();
             break;
         }
         // p : print infomation
@@ -147,16 +151,25 @@ void Tetris::OnKeyDown(int keycode)
     }
 }
 
-void Tetris::PostDrawChanged()
+void Tetris::Rotate()
 {
-    GameStateCenterS::GetInstance()->RequestRePaint();
+    currentTetrimino->rotate();
+    Point p = currentTetrimino->getRotationPosition();
+    currentTetriminoX += p.x;
+    currentTetriminoY += p.y;
+    RePaint();
 }
 
 
-Tetrimino::Tetrimino(FixedArray<TetShape, 4>&& shapes) : shapes(std::move(shapes))
+void Tetris::RePaint()
 {
-
+    GAMESTATECENTER.RequestRePaint();
 }
+
+Tetrimino::Tetrimino(FixedArray<TetShape, 4>&& shapes, const char* name): shapes(std::move(shapes)), name(name)
+{
+}
+
 
 const UnsignedInteger Tetrimino::width() const
 {
@@ -173,7 +186,7 @@ const Tetrimino::Rotation Tetrimino::rotation() const
     return angle;
 }
 
-const Boolean Tetrimino::dot(const UnsignedInteger x, const UnsignedInteger y) const
+const Boolean Tetrimino::dotAt(const UnsignedInteger x, const UnsignedInteger y) const
 {
     return shapes[(UnsignedInteger)angle][y][x];
 }
@@ -188,9 +201,35 @@ const void Tetrimino::rotateLeft()
     angle = (Rotation) ((((UnsignedInteger) angle) + 3) % 4);
 }
 
+const void Tetrimino::reset()
+{
+    this->angle = Rotation::ANGLE_0;
+}
+
+
+
+const Tetrimino& Tetrimino::fixPositionAfterRotate(Integer angle0_x, Integer angle0_y, Integer angle90_x,Integer angle90_y, Integer angle180_x, Integer angle180_y, Integer angle270_x, Integer angle270_y)
+{
+    rotationPositions[0].x = angle0_x;
+    rotationPositions[0].y = angle0_y;
+    rotationPositions[1].x = angle90_x;
+    rotationPositions[1].y = angle90_y;
+    rotationPositions[2].x = angle180_x;
+    rotationPositions[2].y = angle180_y;
+    rotationPositions[3].x = angle270_x;
+    rotationPositions[3].y = angle270_y;
+    return *this;
+}
+
+
+const Point Tetrimino::getRotationPosition() const
+{
+    return rotationPositions[(UnsignedInteger)angle];
+}
+
 const void Tetrimino::print() const
 {
-    __printf__("width: %d, height: %d\n", width(), height());
+    __printf__("name: %s, width: %d, height: %d\n", &name, width(), height());
     auto shape = shapes[(UnsignedInteger)angle];
     for(int i = 0; i < shape.h; i++)
     {
@@ -207,7 +246,7 @@ const void Tetrimino::print() const
 
 
 
-inline Tetrimino MakeTetrimino(const ListLiteral<ListLiteral<Boolean>>&& matrix)
+inline Tetrimino MakeTetrimino(const ListLiteral<ListLiteral<Boolean>>&& matrix, const char* name)
 {
     int h = matrix.size(), w = 0;
     TetShape data  =  {};
@@ -276,17 +315,17 @@ inline Tetrimino MakeTetrimino(const ListLiteral<ListLiteral<Boolean>>&& matrix)
         }
     }
 
-    FixedArray<TetShape, 4> shape_all = { std::move(shape_0), std::move(shape_1), std::move(shape_2), std::move(shape_3) };
+    ;
 
-    return Tetrimino(std::move(shape_all));
+    return Tetrimino({ shape_0, shape_1, shape_2, shape_3 }, name);
 }
 
 
 
-Tetrimino Tetriminos::O = MakeTetrimino({{1, 1}, {1, 1}});
-Tetrimino Tetriminos::I = MakeTetrimino({{1, 1, 1, 1}});
-Tetrimino Tetriminos::T = MakeTetrimino({{1, 1, 1}, {0, 1, 0}});
-Tetrimino Tetriminos::J = MakeTetrimino({{0, 1}, {0, 1}, {0, 1}, {1, 1}});
-Tetrimino Tetriminos::L = MakeTetrimino({{1, 0}, {1, 0}, {1, 0}, {1, 1}});
-Tetrimino Tetriminos::S = MakeTetrimino({{0, 1, 1}, {1, 1, 0}});
-Tetrimino Tetriminos::Z = MakeTetrimino({{1, 1, 0}, {0, 1, 0}});
+Tetrimino Tetriminos::O = MakeTetrimino({{1, 1}, {1, 1}},               "O");
+Tetrimino Tetriminos::I = MakeTetrimino({{1, 1, 1, 1}},                 "I");
+Tetrimino Tetriminos::T = MakeTetrimino({{1, 1, 1}, {0, 1, 0}},         "T").fixPositionAfterRotate(-1, 1, 0, -1, 0, 0, 1, 0);
+Tetrimino Tetriminos::J = MakeTetrimino({{0, 1}, {0, 1}, {1, 1}},       "J").fixPositionAfterRotate(0, -1, 0, 0, 1, 0, -1, 1);
+Tetrimino Tetriminos::L = MakeTetrimino({{1, 0}, {1, 0}, {1, 1}},       "L").fixPositionAfterRotate(1, 0, -1, 1, 0, -1, 0, 0);
+Tetrimino Tetriminos::S = MakeTetrimino({{0, 1, 1}, {1, 1, 0}},         "S");
+Tetrimino Tetriminos::Z = MakeTetrimino({{1, 1, 0}, {0, 1, 1}},         "Z");

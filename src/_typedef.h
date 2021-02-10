@@ -1,21 +1,34 @@
 #ifndef _TYPEDEFH
 #define _TYPEDEFH
 
-#include <stdint.h>
-#include <stddef.h>
+//#include <stdint.h>
+//#include <stddef.h>
 
-typedef bool                  boolean;
-typedef int8_t                int8;
-typedef unsigned char         byte;
-typedef int32_t               int32;
-typedef int64_t               int64;
-typedef size_t                usize;
-typedef uint8_t               uint8;
-typedef uint32_t              uint32;
-typedef uint64_t              uint64;
+/** Machine Basic Type */
+typedef bool                    boolean;
+typedef unsigned char           byte;
+typedef signed char             int8;
+typedef unsigned char           uint8;
+typedef signed int              int32;
+typedef unsigned int            uint32;
 
-typedef decltype(nullptr)     Null;
-#define null                  nullptr
+__extension__ typedef signed   long long int    int64;
+__extension__ typedef unsigned long long int    uint64;
+
+/** type which has size of RAM */
+#ifdef __SIZE_TYPE__
+    typedef __SIZE_TYPE__ usize;
+#else
+    typedef long unsigned int usize;
+#endif //__SIZE_TYPE__
+
+typedef bool                    Boolean;
+typedef uint64                  NonNegInteger;
+typedef NonNegInteger           UnsignedInteger;
+typedef int64                   Integer;
+
+typedef decltype(nullptr)       Null;
+#define null                    nullptr
 
 #if 0
 #include "utils/SharedPointer.h"

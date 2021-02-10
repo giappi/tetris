@@ -94,7 +94,8 @@ int __printf__(const char *fmt, ...)
 			else
 			if (*fmt == 's')
 			{
-				std::string value = (std::string("'") + std::string(va_arg(args, char*)) + std::string("'")).c_str();
+                const char* chars = (const char*)va_arg(args, const char*);
+				std::string value = chars != 0 ? std::string("'") + chars + "'" : "''";
 				__print_value__(value.c_str(), COLOR_STRING);
 			}
 			else

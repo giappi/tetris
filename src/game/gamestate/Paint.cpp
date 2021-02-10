@@ -10,12 +10,8 @@
 
 Paint::Paint()
 {
-    canvas = GameStateCenterS::GetInstance()->GetCanvas();
+    canvas = GAMESTATECENTER.GetCanvas();
     graphics = canvas->GetGraphics();
-}
-
-Paint::Paint(const Paint& orig)
-{
 }
 
 Paint::~Paint()

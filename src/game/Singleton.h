@@ -7,7 +7,6 @@
 
 #ifndef SINGLETON_H
 #define SINGLETON_H
-#include "../com/giappi/Debug.h"
 
 template <class T>
 class Singleton
@@ -24,10 +23,10 @@ public:
 	}
 	static void DestroyInstance()
 	{
-		if (instance != NULL)
+		if (instance != 0x00)
 		{
 			delete instance;
-			instance = NULL;
+			instance = 0x00;
 		}
 	};
 	Singleton& operator=(Singleton const&){};
@@ -40,7 +39,7 @@ protected:
 };
 
 template <class T>
-T* Singleton<T>::instance = NULL;
+T* Singleton<T>::instance = 0x00;
 
 
 

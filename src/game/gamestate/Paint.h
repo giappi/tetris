@@ -15,13 +15,13 @@
 #define PAINT_H
 #include "GameState.h"
 class Paint:
-            public GameState 
+        public GameState
 {
 public:
     Paint();
-    Paint(const Paint& orig);
+    Paint(const Paint&) = delete;
     virtual ~Paint();
-    
+
     void OnMouseDown(int x, int y);
     void OnMouseUp(int x, int y);
     void OnMouseMove(int x, int y);
@@ -31,8 +31,8 @@ private:
     bool  mouseHolding;
     int   lastMouseX = 0;
     int   lastMouseY = 0;
-    Canvas* canvas = NULL;
-    Graphics* graphics = NULL;
+    Canvas*     canvas      = 0x00;
+    Graphics*   graphics    = 0x00;
 };
 
 #endif /* PAINT_H */

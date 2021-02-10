@@ -35,13 +35,13 @@ void Application::Run()
         return;
     }
 
-    GameStateCenterS::GetInstance()->PushState(new Tetris());
+    GAMESTATECENTER.PushState(new Tetris());
 
     // Game Interval
     auto gameInterval = TIMER.setInterval([]()
     {
-        GameStateCenterS::GetInstance()->Update();
-        GameStateCenterS::GetInstance()->Draw();
+        GAMESTATECENTER.Update();
+        GAMESTATECENTER.Draw();
     }, 20*MILISECOND);
 
     __printf__("[I] Begin Main Loop");

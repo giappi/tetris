@@ -31,16 +31,20 @@ private:
     Rotation                angle   = Rotation::ANGLE_0;
     /** 4 shape of rotation state */
     FixedArray<TetShape, ROTATIONS_NUM>     shapes = {};
-    FixedArray<Point,    ROTATIONS_NUM>     rotationPosition[4] = {};
+    FixedArray<Point,    ROTATIONS_NUM>     rotationPositions = {};
+    FixedString<64>                         name = "";
 public:
-    Tetrimino(FixedArray<TetShape, 4>&& shapes);
+    Tetrimino(FixedArray<TetShape, 4>&& shapes, const char* name = "");
     Tetrimino(){};
     const UnsignedInteger   width()     const;
     const UnsignedInteger   height()    const;
     const Rotation          rotation()  const;
-    const Boolean           dot(const UnsignedInteger x, const UnsignedInteger y) const;
+    const Boolean           dotAt(const UnsignedInteger x, const UnsignedInteger y) const;
     const void              rotate();
     const void              rotateLeft();
+    const Point             getRotationPosition() const;
+    const Tetrimino&        fixPositionAfterRotate(Integer x_angle0_x, Integer y_angle0, Integer x_angle90, Integer y_angle90, Integer x_angle180, Integer y_angle180, Integer x_angle270, Integer y_angle270);
+    const void              reset();
     const void              print() const;
 };
 
@@ -70,8 +74,8 @@ public:
     virtual void DrawCell(int i, int j);
     virtual void DrawBoard();
     virtual void DrawTetrimino(int i, int j, const Tetrimino& tet) const;
-    virtual void PostDrawChanged();
-
+    virtual void RePaint();
+    virtual void Rotate();
     virtual void OnKeyDown(int keycode) override;
 
 
