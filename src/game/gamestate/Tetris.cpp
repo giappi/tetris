@@ -6,15 +6,11 @@
  */
 
 #include "Tetris.h"
-#include "../../game/GameStateCenter.h"
-#include "../../utils/Memory.h"
+#include "tetris/Tetriminos.h"
+#include "game/GameStateCenter.h"
+#include "utils/Memory.h"
 #include "com/giappi/Timer.h"
 #include <chrono>
-#include <initializer_list>
-#include "cpp/lang/String.h"
-#include <cstdlib>
-
-#define ListLiteral std::initializer_list
 
 
 std::function<void()> drop;
@@ -154,7 +150,7 @@ void Tetris::OnKeyDown(int keycode)
 void Tetris::Rotate()
 {
     currentTetrimino->rotate();
-    Point p = currentTetrimino->getRotationPosition();
+    Tetrimino::Point p = currentTetrimino->getRotationPosition();
     currentTetriminoX += p.x;
     currentTetriminoY += p.y;
     RePaint();
@@ -166,166 +162,3 @@ void Tetris::RePaint()
     GAMESTATECENTER.RequestRePaint();
 }
 
-Tetrimino::Tetrimino(FixedArray<TetShape, 4>&& shapes, const char* name): shapes(std::move(shapes)), name(name)
-{
-}
-
-
-const UnsignedInteger Tetrimino::width() const
-{
-    return shapes[(UnsignedInteger)angle].w;
-}
-
-const UnsignedInteger Tetrimino::height() const
-{
-    return shapes[(UnsignedInteger)angle].h;
-}
-
-const Tetrimino::Rotation Tetrimino::rotation() const
-{
-    return angle;
-}
-
-const Boolean Tetrimino::dotAt(const UnsignedInteger x, const UnsignedInteger y) const
-{
-    return shapes[(UnsignedInteger)angle][y][x];
-}
-
-const void Tetrimino::rotate()
-{
-    angle = (Rotation) ((((UnsignedInteger) angle) + 1) % 4);
-}
-
-const void Tetrimino::rotateLeft()
-{
-    angle = (Rotation) ((((UnsignedInteger) angle) + 3) % 4);
-}
-
-const void Tetrimino::reset()
-{
-    this->angle = Rotation::ANGLE_0;
-}
-
-
-
-const Tetrimino& Tetrimino::fixPositionAfterRotate(Integer angle0_x, Integer angle0_y, Integer angle90_x,Integer angle90_y, Integer angle180_x, Integer angle180_y, Integer angle270_x, Integer angle270_y)
-{
-    rotationPositions[0].x = angle0_x;
-    rotationPositions[0].y = angle0_y;
-    rotationPositions[1].x = angle90_x;
-    rotationPositions[1].y = angle90_y;
-    rotationPositions[2].x = angle180_x;
-    rotationPositions[2].y = angle180_y;
-    rotationPositions[3].x = angle270_x;
-    rotationPositions[3].y = angle270_y;
-    return *this;
-}
-
-
-const Point Tetrimino::getRotationPosition() const
-{
-    return rotationPositions[(UnsignedInteger)angle];
-}
-
-const void Tetrimino::print() const
-{
-    __printf__("name: %s, width: %d, height: %d\n", &name, width(), height());
-    auto shape = shapes[(UnsignedInteger)angle];
-    for(int i = 0; i < shape.h; i++)
-    {
-        char s[shape.w+1];
-        for(int j = 0; j < shape.w; j++)
-        {
-            s[j] = shape[i][j] ? '#' : '-';
-        }
-        s[shape.w] = '\0';
-        __printf__("%s", s);
-    }
-    __printf__("\n");
-}
-
-
-
-inline Tetrimino MakeTetrimino(const ListLiteral<ListLiteral<Boolean>>&& matrix, const char* name)
-{
-    int h = matrix.size(), w = 0;
-    TetShape data  =  {};
-    int _i = 0;
-    for(auto& list : matrix)
-    {
-        w = list.size();
-        data[_i] = {};
-        int _j = 0;
-        for(auto bit : list)
-        {
-            data[_i][_j] = bit;
-            ++_j;
-        }
-        ++_i;
-    }
-
-    data.h = h;
-    data.w = w;
-
-    TetShape shape_0 = {};
-    shape_0.h = data.h;
-    shape_0.w = data.w;
-    for(auto i = 0; i < h; i++)
-    {
-        shape_0[i] = {};
-        for(auto j = 0; j < w; j++)
-        {
-            shape_0[i][j] = data[i][j];
-        }
-    }
-
-    TetShape shape_1 = {};
-    shape_1.h = data.w;
-    shape_1.w = data.h;
-    for(auto i = 0; i < shape_1.h; i++)
-    {
-        shape_1[i] = {};
-        for(auto j = 0; j < shape_1.w; j++)
-        {
-            shape_1[i][j] = data[h-1-j][i];
-        }
-    }
-
-    TetShape shape_2 = {};
-    shape_2.h = data.h;
-    shape_2.w = data.w;
-    for(auto i = 0; i < shape_2.h; i++)
-    {
-        shape_2[i] = {};
-        for(auto j = 0; j < shape_2.w; j++)
-        {
-            shape_2[i][j] = data[h-1-i][w-1-j];
-        }
-    }
-
-    TetShape shape_3 = {};
-    shape_3.h = data.w;
-    shape_3.w = data.h;
-    for(auto i = 0; i < shape_3.h; i++)
-    {
-        shape_3[i] = {};
-        for(auto j = 0; j < shape_3.w; j++)
-        {
-            shape_3[i][j] = data[j][w-1-i];
-        }
-    }
-
-    ;
-
-    return Tetrimino({ shape_0, shape_1, shape_2, shape_3 }, name);
-}
-
-
-
-Tetrimino Tetriminos::O = MakeTetrimino({{1, 1}, {1, 1}},               "O");
-Tetrimino Tetriminos::I = MakeTetrimino({{1, 1, 1, 1}},                 "I");
-Tetrimino Tetriminos::T = MakeTetrimino({{1, 1, 1}, {0, 1, 0}},         "T").fixPositionAfterRotate(-1, 1, 0, -1, 0, 0, 1, 0);
-Tetrimino Tetriminos::J = MakeTetrimino({{0, 1}, {0, 1}, {1, 1}},       "J").fixPositionAfterRotate(0, -1, 0, 0, 1, 0, -1, 1);
-Tetrimino Tetriminos::L = MakeTetrimino({{1, 0}, {1, 0}, {1, 1}},       "L").fixPositionAfterRotate(1, 0, -1, 1, 0, -1, 0, 0);
-Tetrimino Tetriminos::S = MakeTetrimino({{0, 1, 1}, {1, 1, 0}},         "S");
-Tetrimino Tetriminos::Z = MakeTetrimino({{1, 1, 0}, {0, 1, 1}},         "Z");

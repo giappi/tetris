@@ -26,6 +26,7 @@ typedef bool                    Boolean;
 typedef uint64                  NonNegInteger;
 typedef NonNegInteger           UnsignedInteger;
 typedef int64                   Integer;
+typedef long double             Float;
 
 typedef decltype(nullptr)       Null;
 #define null                    nullptr
